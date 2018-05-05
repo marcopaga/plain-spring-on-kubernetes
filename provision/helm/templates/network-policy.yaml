@@ -2,12 +2,12 @@
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: {{ template "cloud.fullname" $ }}-deny-from-other-namespaces
+  name: {{ template "app.fullname" $ }}-deny-from-other-namespaces
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "cloud.name" $ }}
+    app: {{ template "app.name" $ }}
     release: {{ $.Release.Name }}
-    chart: {{ template "cloud.chart" $ }}
+    chart: {{ template "app.chart" $ }}
     heritage: {{ $.Release.Service }}
 spec:
   podSelector:
@@ -19,79 +19,38 @@ spec:
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: {{ template "cloud.fullname" $ }}-default-deny-all
+  name: {{ template "app.fullname" $ }}-allow-external-to-frontend
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "cloud.name" $ }}
+    app: {{ template "app.name" $ }}
     release: {{ $.Release.Name }}
-    chart: {{ template "cloud.chart" $ }}
-    heritage: {{ $.Release.Service }}
-spec:
-  podSelector: {}
-  policyTypes:
-  - Ingress
-  - Egress
-  ingress: []
-  egress: []
-  - to:
-    ports: 53
----
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: {{ template "cloud.fullname" $ }}-allow-external-to-edgeservice
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app: {{ template "cloud.name" $ }}
-    release: {{ $.Release.Name }}
-    chart: {{ template "cloud.chart" $ }}
+    chart: {{ template "app.chart" $ }}
     heritage: {{ $.Release.Service }}
 spec:
   podSelector:
     matchLabels:
-      component: edgeservice
-      app: {{ template "cloud.name" $ }}
-  ingress:
-  - from: []
----
-kind: NetworkPolicy
-apiVersion: networking.k8s.io/v1
-metadata:
-  name: {{ template "cloud.fullname" $ }}-intra-app-networking
-  namespace: {{ .Release.Namespace }}
-  labels:
-    app: {{ template "cloud.name" $ }}
-    release: {{ $.Release.Name }}
-    chart: {{ template "cloud.chart" $ }}
-    heritage: {{ $.Release.Service }}
-spec:
-  podSelector:
-    matchLabels:
-      app: {{ template "cloud.name" $ }}
+      component: frontend
+      app: {{ template "app.name" $ }}
       release: {{ $.Release.Name }}
   ingress:
-  - from:
-      - podSelector:
-          matchLabels:
-            app: {{ template "cloud.name" $ }}
-            release: {{ $.Release.Name }}
+  - from: []
 {{- if .Values.zipkin.enabled -}}
 ---
 kind: NetworkPolicy
 apiVersion: networking.k8s.io/v1
 metadata:
-  name: {{ template "cloud.fullname" $ }}-allow-external-to-edgeservice
+  name: {{ template "app.fullname" $ }}-allow-external-to-zipkin
   namespace: {{ .Release.Namespace }}
   labels:
-    app: {{ template "cloud.name" $ }}
+    app: {{ template "app.name" $ }}
     release: {{ $.Release.Name }}
-    chart: {{ template "cloud.chart" $ }}
+    chart: {{ template "app.chart" $ }}
     heritage: {{ $.Release.Service }}
 spec:
   podSelector:
     matchLabels:
       component: zipkin
-      app: {{ template "cloud.name" $ }}
+      app: {{ template "app.name" $ }}
   ingress:
   - from: []
 ---
