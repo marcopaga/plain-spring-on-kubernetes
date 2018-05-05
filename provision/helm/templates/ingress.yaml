@@ -2,10 +2,10 @@
 apiVersion: extensions/v1beta1
 kind: Ingress
 metadata:
-  name: "{{ template "cloud.fullname" $ }}-ingress"
+  name: "{{ template "app.fullname" $ }}-ingress"
   labels:
-    app: {{ template "cloud.name" . }}
-    chart: {{ template "cloud.chart" . }}
+    app: {{ template "app.name" . }}
+    chart: {{ template "app.chart" . }}
     release: {{ .Release.Name }}
     heritage: {{ .Release.Service }}
 {{- with .Values.ingress.annotations }}
@@ -19,13 +19,13 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "cloud.fullname" $ }}-frontend
+          serviceName: {{ template "app.fullname" $ }}-frontend
           servicePort: 8091
 {{ if .Values.zipkin.enabled }}
   - host: {{ .Values.ingress.hosts.zipkin.host }}
       - path: /
         backend:
-          serviceName: {{ template "cloud.fullname" $ }}-zipkin
+          serviceName: {{ template "app.fullname" $ }}-zipkin
           servicePort: 9411
 {{ end }}          
 {{- end }}

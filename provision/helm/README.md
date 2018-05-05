@@ -8,7 +8,7 @@ Please have a look at the [project page](https://helm.sh/) to find more info on 
 
 Please make sure you can reach your cluster with the ingresss names e.g. by adding it to your hosts-file.
 
-The hostnames are by default `frontend.cloud.minikube.local` and `zipkin.cloud.minikube.local`.
+The hostnames are by default `frontend.app.minikube.local` and `zipkin.app.minikube.local`.
 
 
 # Initialise Helm
@@ -48,7 +48,7 @@ helm upgrade test . -i --wait
 # Create chaos
 
 ```
-helm install --set labels='app=cloud',namespaces='!kube-system\,!production',rbac.create=true,dryRun=false stable/chaoskube --debug --name chaos
+helm install --set labels='app=plain,namespaces='!kube-system\,!production',rbac.create=true,dryRun=false stable/chaoskube --debug --name chaos
 ```
 
 # Delete the app

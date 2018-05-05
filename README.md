@@ -1,43 +1,23 @@
-# Spring Cloud Demo
+# Plain Spring Boot App on Kubernetes
 
-This is a spring cloud Demo Project with Zuul, Eureka, Ribbon, Sleuth &amp; Zipkin. 
+This projects deploys two microservices in kubernetes and allows accessing these via an ingress controller. 
 
 # Intro
 
-When you are migrating to a microservice environment you are getting a lot of beneftis and on the other side you need to tackle new challenges.
-
-- How can you find all service instances that are up and running?
-- What if a service won't respond? How do you handle load balancing between the available instances?
-- Services won't respond successfully or even throw errors. Can you provide a sane fallback for the user?
-- How to debug and analyze issues in your distributed production enivornment? Why was the call so slow? Where did the error happen? 
-
-![System diagram](Spring_cloud.png)
+When I started working on the [Spring Cloud Netflix Demo project](https://github.com/marcopaga/spring-cloud-netflix-demo) my only deployment platform was a simple automated 
+docker-compose build and I wasn't aiming for a platform like kubernetes that can simplify the application development.
 
 # Deployment
 
-You can start the application locally with [docker-compose](docker-compose.yml).
-For the deployment to kubernetes you can find two options. The first one is a [plain](provision/kubernetes) deployment of the manifests. The more advanced way is using [helm](provision/helm).
+Using [docker-compose](docker-compose.yml) or [kubernetes](provision/helm).
 
-Using [docker-compose](docker-compose.yml) or [kubernetes](provision/kubernetes).
+# Security
+
+* Applications run as a non root user
+* The container root filesystem is read only
+* Service Accounts are not mounted
 
 # Components
-
-## Infrastructure
-
-### [configserver](configserver/README.md)
-
-The configuration server uses the [spring-cloud-netflix-demo-config](https://github.com/marcopaga/spring-cloud-netflix-demo-config/)-git repository.
-Now you can cahnge the configuration in the git repository and the properties will be forwarded to the running instances. You need to make the context refreshable via @RefreshScope.
-
-### [eureka](eureka/README.md)
-
-This is the distributed service directory. All services will register with eureka.
-
-### [edgeservice](edgeservice/README.md)
-
-This service is using zuul as the gateway to our microservices. All requests to our application pass this central instance.
-Here you can process the requests in multiple ways.
-Be advised that zuul is deprecated and will be replaced by [Spring cloud gateway](http://cloud.spring.io/spring-cloud-gateway/) which will be based on Project Reactor.
 
 ## Business Services
 
@@ -68,13 +48,11 @@ Start the applications with Docker Compose.
 
 Have a look at the [configuration](docker-compose.yml).
 
-# Using
-
-You need to give the whole stack some time to find the available services in eureka.
+# Calls
 
 ## Sample call:
 
-[localhost:8080/frontend/](http://localhost:8080/frontend/)
+[localhost:8080/frontend/](http://localhost:8091/frontend/)
 
 ## Zipkin:
 

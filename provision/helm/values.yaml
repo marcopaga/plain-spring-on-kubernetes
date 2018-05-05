@@ -1,13 +1,11 @@
-# Default values for cloud.
+# Default values for app.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
-
-applications:  
+applications:
   backend:
     name: backend
-    replicas: 1
+    replicas: 2
     port: 8090
     image:
       repository: marcopaga/plain-backend
@@ -15,7 +13,7 @@ applications:
       imagePullPolicy: Always
   frontend:
     name: frontend
-    replicas: 1
+    replicas: 2
     port: 8091
     image:
       repository: marcopaga/plain-frontend
