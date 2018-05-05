@@ -10,44 +10,25 @@ applications:
     replicas: 1
     port: 8090
     image:
-      repository: marcopaga/cloud-backend
+      repository: marcopaga/plain-backend
       tag: 1
       imagePullPolicy: Always
   frontend:
     name: frontend
+    replicas: 1
     port: 8091
     image:
-      repository: marcopaga/cloud-frontend
+      repository: marcopaga/plain-frontend
       tag: 1
       imagePullPolicy: Always
-      
-infrastructure:
-  eureka:
-    name: eureka
-    port: 8761
-    image:
-      repository: marcopaga/cloud-eureka
-      tag: 1
-  edgeservice:
-    name: edgeservice
-    port: 8080
-    image:
-      repository: marcopaga/cloud-edgeservice
-      tag: 1
-  configserver:
-    name: configserver
-    port: 8888
-    image:
-      repository: marcopaga/cloud-configserver
-      tag: 1
 
 ingress:
   enabled: true
   hosts:
     frontend:
-      host: frontend.cloud.minikube.local
+      host: frontend.minikube.local
     zipkin:
-      host: zipkin.cloud.minikube.local
+      host: zipkin.minikube.local
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /
   tls: []
@@ -62,6 +43,9 @@ zipkin:
     tag: 2.4.4
     imagePullPolicy: IfNotPresent
 
+security:
+  networkpolicy:
+    enabled: false
 
 resources: {}
   # We usually recommend not to specify default resources and to leave this as a conscious

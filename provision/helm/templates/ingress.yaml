@@ -19,8 +19,8 @@ spec:
       paths:
       - path: /
         backend:
-          serviceName: {{ template "cloud.fullname" $ }}-edgeservice
-          servicePort: 8080
+          serviceName: {{ template "cloud.fullname" $ }}-frontend
+          servicePort: 8091
 {{ if .Values.zipkin.enabled }}
   - host: {{ .Values.ingress.hosts.zipkin.host }}
       - path: /

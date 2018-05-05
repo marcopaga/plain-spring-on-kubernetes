@@ -27,15 +27,10 @@ spec:
     spec:
       automountServiceAccountToken: false
       initContainers:
-      - name: init-myservice
-        image: saltside/await
-        command: ['await', '-r', '300' ,'http://{{ template "cloud.fullname" $ }}-eureka:8761/health']
       containers:
       - env:
-        - name: CONFIGSERVER_HOST
-          value: {{ template "cloud.fullname" $ }}-configserver
-        - name: EUREKA_HOST
-          value: {{ template "cloud.fullname" $ }}-eureka
+        - name: BACKEND_URL
+          value: http://{{ template "cloud.fullname" $ }}-backend:8090
         {{- if $.Values.zipkin.enabled -}}          
         - name: ZIPKIN_HOST
           value: {{ template "cloud.fullname" $ }}-zipkin
@@ -51,7 +46,6 @@ spec:
             port: {{ .port | default "8080"}}
           periodSeconds: 60
           timeoutSeconds: 2
-          failureThreshold: 2
         readinessProbe:
           httpGet:
             path: /health
@@ -59,7 +53,8 @@ spec:
           failureThreshold: 12
         securityContext:
           readOnlyRootFilesystem: true
-          runAsNonRoot: false
+          runAsNonRoot: true
+          runAsUser: 1000
         resources:
         {{ toYaml $.Values.resources | indent 10 }}
 ---

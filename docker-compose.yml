@@ -5,48 +5,21 @@ services:
     image: openzipkin/zipkin
     ports:
       - "9411:9411"
-  configserver:
-    build: configserver/.
-    image: marcopaga/cloud-configserver:1
-    ports:
-      - "8888:8888"
-  eureka:
-    build: eureka/.
-    image: marcopaga/cloud-eureka:1
-    ports:
-      - "8761:8761"
-    environment:
-      - CONFIGSERVER_HOST=configserver
-    depends_on:
-      - configserver
-  edgeservice:
-    build: edgeservice/.
-    image: marcopaga/cloud-edgeservice:1
-    ports:
-      - "8080:8080"
-    environment:
-      - EUREKA_HOST=eureka
-      - ZIPKIN_HOST=zipkin
-      - CONFIGSERVER_HOST=configserver
-    depends_on:
-      - eureka
   frontend:
     build: frontend/.
-    image: marcopaga/cloud-frontend:1
+    image: marcopaga/plain-frontend:1
+    ports:
+      - "8091:8091"
     environment:
-      - EUREKA_HOST=eureka
       - ZIPKIN_HOST=zipkin
-      - CONFIGSERVER_HOST=configserver
     depends_on:
-      - eureka
       - zipkin
   backend:
     build: backend/.
-    image: marcopaga/cloud-backend:2
+    image: marcopaga/plain-backend:1
+    ports:
+      - "8090:8090"
     environment:
-      - EUREKA_HOST=eureka
       - ZIPKIN_HOST=zipkin
-      - CONFIGSERVER_HOST=configserver
     depends_on:
-      - eureka
       - zipkin

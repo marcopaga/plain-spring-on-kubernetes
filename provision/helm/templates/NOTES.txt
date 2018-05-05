@@ -3,7 +3,7 @@
 {{- if .Values.ingress.enabled }}
 Find the frontend over here:
 
-http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $.Values.ingress.hosts.frontend.host }}/frontend/
+http{{ if $.Values.ingress.tls }}s{{ end }}://{{ $.Values.ingress.hosts.frontend.host }}
 
 {{- if .Values.zipkin.enabled }}
 
