@@ -41,7 +41,7 @@ istioctl proxy-status
 
 Sample output:
 
-````
+```
 ➜  istio istioctl proxy-status
 PROXY                                                 CDS        LDS        EDS               RDS          PILOT                            VERSION
 istio-egressgateway-6cff45b4db-4wzsz.istio-system     SYNCED     SYNCED     SYNCED (100%)     NOT SENT     istio-pilot-6cd95f9cc4-9vwk7     1.0.0
