@@ -1,71 +1,56 @@
-# Plain Spring Boot App on Kubernetes
+# Plain Spring Boot App on Kubernetes with the istio service mesh
 
-This projects deploys two microservices in kubernetes and allows accessing these via an ingress controller. 
+This projects deploys two microservices in kubernetes and interconnects these with the istio [service mesh](https://istio.io)
 
-# Intro
 
-When I started working on the [Spring Cloud Netflix Demo project](https://github.com/marcopaga/spring-cloud-netflix-demo) my only deployment platform was a simple automated 
-docker-compose build and I wasn't aiming for a platform like kubernetes that can simplify the application development.
+# Installation on minikube
 
-# Deployment
+Follow these links to install istio in a new minikube cluster. Once you follow these steps you have a setup with automatic sidecar injection.
+The infrastructure of istio is automatically injected into the pod. So you don't need to extend your configuration to benefit from istio.
 
-Using [docker-compose](docker-compose.yml) or [kubernetes](provision/helm).
+https://istio.io/docs/setup/kubernetes/download-release/
 
-# Security
+https://istio.io/docs/setup/kubernetes/platform-setup/minikube/
+https://istio.io/docs/setup/kubernetes/helm-install/#installation-steps
+https://istio.io/docs/setup/kubernetes/helm-install/#option-2-install-with-helm-and-tiller-via-helm-install
 
-* Applications run as a non root user
-* The container root filesystem is read only
-* Service Accounts are not mounted
+# Enable automatic sidecar injection
 
-# Components
+After following the installation steps istio is deployed and can automatically inject the sidecars into the pod.
+This needs to be enabled by setting the istio-injection=enabled - Label to the needed namespace.
 
-## Business Services
+```
+kubectl label namespace default istio-injection=enabled
+```
 
-### [backend](backend/README.md)
+# Deploy the app
 
-This is a simple demo application which can perform a simple calculation. The operation is available via a REST interface.
+```
+helm upgrade test . -i -w
+```
 
-### [frontend](frontend/README.md)
+# Access the app
 
-This application will use the backend to perform a calculation. The backend will be called with a simple RestTemplate.
-The call is carried out with ribbon which uses eureka to discover the backend insances.
+The ingress controller will expose the service at http://frontend.minikube.local .
 
-# Distributed Tracing
+Check the status of the istio mesh.  You should see your pods in the overview:
 
-All components include [Sleuth](http://cloud.spring.io/spring-cloud-static/spring-cloud-sleuth/1.2.5.RELEASE/single/spring-cloud-sleuth.html#_terminology) that provides tracing information for all requests. The meta data will be transferred between the services.
-The demo project uses [Zipkin](http://zipkin.io/) to show the tracing information.
-If you are using the ELK Stack you are also covered. Have a look [here](http://cloud.spring.io/spring-cloud-static/spring-cloud-sleuth/1.2.5.RELEASE/single/spring-cloud-sleuth.html#_log_correlation) to find the details. 
+```
+istioctl proxy-status
+```
 
-# Running
+Sample output:
 
-Prepare the Spring Boot Apps with Maven. In order to start the apps you need create the jar-Files.
+````
+➜  istio istioctl proxy-status
+PROXY                                                 CDS        LDS        EDS               RDS          PILOT                            VERSION
+istio-egressgateway-6cff45b4db-4wzsz.istio-system     SYNCED     SYNCED     SYNCED (100%)     NOT SENT     istio-pilot-6cd95f9cc4-9vwk7     1.0.0
+istio-ingressgateway-fc648887c-j978j.istio-system     SYNCED     SYNCED     SYNCED (100%)     NOT SENT     istio-pilot-6cd95f9cc4-9vwk7     1.0.0
+sleep-86f6b99f94-g67fc.default                        SYNCED     SYNCED     SYNCED (100%)     SYNCED       istio-pilot-6cd95f9cc4-9vwk7     1.0.0
+test-plain-backend-7987b6c8cf-dc8vd.default           SYNCED     SYNCED     SYNCED (100%)     SYNCED       istio-pilot-6cd95f9cc4-9vwk7     1.0.0
+test-plain-backend-7987b6c8cf-kw9n2.default           SYNCED     SYNCED     SYNCED (100%)     SYNCED       istio-pilot-6cd95f9cc4-9vwk7     1.0.0
+test-plain-frontend-7db44ffbd-7skvq.default           SYNCED     SYNCED     SYNCED (100%)     SYNCED       istio-pilot-6cd95f9cc4-9vwk7     1.0.0
+test-plain-frontend-7db44ffbd-lnhhp.default           SYNCED     SYNCED     SYNCED (100%)     SYNCED       istio-pilot-6cd95f9cc4-9vwk7     1.0.0
+```
 
-> mvn clean install 
-
-Start the applications with Docker Compose.
-
-> docker-compose up -d
-
-Have a look at the [configuration](docker-compose.yml).
-
-# Calls
-
-## Sample call:
-
-[localhost:8080/frontend/](http://localhost:8091/frontend/)
-
-## Zipkin:
-
-[localhost:9411](http://localhost:9411/)
-
-## Eureka:
-
-[localhost:8761](http://localhost:8761/)
-
-## Config Server:
-
-[localhost:8888](http://localhost:8888/)
-
-# License
-
-[![License: CC BY 4.0](https://licensebuttons.net/l/by/4.0/80x15.png)](https://creativecommons.org/licenses/by/4.0/)
+Follow along the logs to see istio in action. You can use a tool like [kail](https://github.com/boz/kail) to see all log messages in one place.
