@@ -34,7 +34,7 @@ spec:
         - name: ZIPKIN_HOST
           value: {{ template "app.fullname" $ }}-zipkin
         {{- end }}
-        name: backend
+        name: "{{ template "app.fullname" $ }}-{{ .name }}"
         image: "{{ .image.repository }}:{{ .image.tag | default "LATEST" }}"
         imagePullPolicy: {{ .image.pullPolicy | default "Always" }}
         ports:
