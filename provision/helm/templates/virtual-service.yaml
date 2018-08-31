@@ -21,3 +21,6 @@ spec:
         port:
           number: 8091
         host: {{ template "app.fullname" $ }}-frontend
+    retries:
+      attempts: 3
+      perTryTimeout: 1s
