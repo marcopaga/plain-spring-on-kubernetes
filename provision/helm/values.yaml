@@ -28,7 +28,7 @@ ingress:
     zipkin:
       host: zipkin.minikube.local
   annotations:
-    kubernetes.io/ingress.class: "istio"
+    nginx.ingress.kubernetes.io/rewrite-target: /
   tls: []
   #  - secretName: chart-example-tls
   #    hosts:
