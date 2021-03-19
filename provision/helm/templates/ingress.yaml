@@ -1,0 +1,31 @@
+{{- if .Values.ingress.enabled -}}
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: "{{ template "app.fullname" $ }}-ingress"
+  labels:
+    app: {{ template "app.name" . }}
+    chart: {{ template "app.chart" . }}
+    release: {{ .Release.Name }}
+    heritage: {{ .Release.Service }}
+{{- with .Values.ingress.annotations }}
+  annotations:
+{{ toYaml . | indent 4 }}
+{{- end }}
+spec:
+  rules:
+  - host: {{ .Values.ingress.hosts.frontend.host }}
+    http:
+      paths:
+      - path: /
+        backend:
+          serviceName: {{ template "app.fullname" $ }}-frontend
+          servicePort: 8091
+{{ if .Values.zipkin.enabled }}
+  - host: {{ .Values.ingress.hosts.zipkin.host }}
+      - path: /
+        backend:
+          serviceName: {{ template "app.fullname" $ }}-zipkin
+          servicePort: 9411
+{{ end }}          
+{{- end }}

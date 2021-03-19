@@ -1,3 +1,0 @@
-name: plain-spring
-runtime: nodejs
-description: This projects deploys two microservices in a kubernetes cluster
