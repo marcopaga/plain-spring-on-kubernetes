@@ -1,4 +1,4 @@
-FROM maven:3.6-jdk-11 as build
+FROM maven:3.8-jdk-11 as build
 
 COPY pom.xml /usr/src/app/pom.xml
 RUN mvn -B -f /usr/src/app/pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency:resolve-plugins dependency:resolve
