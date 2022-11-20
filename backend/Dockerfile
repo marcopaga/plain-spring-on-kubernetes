@@ -5,7 +5,7 @@ RUN mvn -B -f /usr/src/app/pom.xml -s /usr/share/maven/ref/settings-docker.xml d
 COPY src /usr/src/app/src
 RUN mvn -f /usr/src/app/pom.xml -B -s /usr/share/maven/ref/settings-docker.xml clean package
 
-FROM openjdk:11-jre-slim-stretch
+FROM openjdk:11.0.3-jre-slim-stretch
 ENV APP_USER app
 ENV APP_GROUP app
 
