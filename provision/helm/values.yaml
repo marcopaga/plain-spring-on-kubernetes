@@ -38,7 +38,7 @@ zipkin:
   enabled: false
   image:
     repository: openzipkin/zipkin
-    tag: 2.24.2
+    tag: 2.24.3
     imagePullPolicy: IfNotPresent
 
 security:
